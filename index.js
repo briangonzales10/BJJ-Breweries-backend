@@ -4,6 +4,7 @@ const express = require('express')
 const {MongoClient} = require('mongodb')
 let ObjectId = require('mongodb').ObjectID;
 const app = express()
+var cors = require('cors')
 
 //Variables
 const PORT = process.env.PORT || 3000
@@ -13,10 +14,11 @@ const DB_PASS = process.env.DB_PASS
 const DB_URL = `mongodb+srv://${DB_USER}:${DB_PASS}@cluster0.cthf2.mongodb.net/${DB_NAME}?retryWrites=true&w=majority`
 //Uses
 app.use(express.json())
+app.use(cors())
 const client = new MongoClient(DB_URL)
 
 
-
+//Connect to our MongoDB
 client.connect( (err) =>{
     if (err) {
         return console.error(err)
@@ -37,7 +39,7 @@ app.get('/list', async(req, res) =>{
     res.json(results)
 })
 
-
+//Post route for tours
 app.post('/tours', async(req, res) =>{
     const newTour = {
         name: req.body.name,
@@ -57,6 +59,7 @@ app.post('/tours', async(req, res) =>{
 
 })
 
+//Delete tours via ID parameters
 app.delete('/tours/:id', async (req, res) =>{
     const deleteID = { 
         "_id" : ObjectId(req.params.id) 
@@ -66,25 +69,38 @@ app.delete('/tours/:id', async (req, res) =>{
     res.send('Deletion Success')
 })
 
-app.put("/tours/:id", async(req, res) =>{
+//Put route to add or remove breweries from specific tours. Requires type of 'add' or 'remove'
+app.put("/tours/:type/:id", async(req, res) =>{
     const {name, breweries} = req.body
-    const {id} = req.params
+    const {id,type} = req.params
     const filter = {'_id' : ObjectId(id)}
    
     console.log(`Brewery Array Length ${breweries.length}`);
 
     const updateBreweries = breweries
-
+//update Brewery Tour Name
     if (name.length !== 0){
         await tourCollection.updateOne(filter, 
            {$set: {name: name} })
     }
+//add or removes breweries to/from tour  
 console.log(updateBreweries);
     if (Array.isArray(updateBreweries)) {
+
+        if (type === "add"){
         await tourCollection.updateOne(filter, 
             {$addToSet: {breweries: {$each: updateBreweries}}})
             console.log('multi array pushed');
-            res.send({status: "Success"})
+            res.send({status: "Add Success"})
+        }
+        if (type === "remove") {
+            await tourCollection.updateOne(filter, 
+                {$pullAll: 
+                    {breweries: updateBreweries}
+                })
+                res.send({status: "Remove Success"})
+        }
+
     }else{
         res.send("please update breweries")
     }
