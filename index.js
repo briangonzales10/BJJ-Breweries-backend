@@ -1,7 +1,7 @@
 //Required
 require('dotenv').config()
 const express = require('express')
-const {MongoClient} = require('mongodb')
+const {MongoClient, ObjectID} = require('mongodb')
 let ObjectId = require('mongodb').ObjectID;
 const app = express()
 var cors = require('cors')
@@ -34,8 +34,16 @@ client.connect( (err) =>{
 })
 
 ///////////////////DB CONNECTION OPEN////////////////////
-app.get('/list', async(req, res) =>{
+
+//Get route for ALL tours
+app.get('/list/', async(req, res) =>{
     const results = await tourCollection.find({}).toArray()
+    res.json(results)
+})
+
+//Get route by single Tour ID
+app.get('/id/:id', async(req, res) =>{
+    const results = await tourCollection.find({"_id": ObjectID(req.params.id)}).toArray()
     res.json(results)
 })
 
@@ -107,9 +115,6 @@ console.log(updateBreweries);
     
     
 })
-
-
-
 
 ////////////////////DB CONNECTION CLOSE//////////////////
 // client.close();
