@@ -78,7 +78,7 @@ app.delete('/tours/:id', async (req, res) =>{
 })
 
 //Put route to add or remove breweries from specific tours. Requires type of 'add' or 'remove'
-app.put("/tours/:type/:id", async(req, res) =>{
+app.put("/tours/:type/:id", cors() ,async(req, res) =>{
     const {name, breweries} = req.body
     const {id,type} = req.params
     const filter = {'_id' : ObjectId(id)}
