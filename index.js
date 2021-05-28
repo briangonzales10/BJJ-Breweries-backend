@@ -107,6 +107,7 @@ console.log(updateBreweries);
                 {$pullAll: 
                     {breweries: updateBreweries}
                 })
+                console.log(updateBreweries + 'removed');
                 res.send({status: "Remove Success"})
         }
 
