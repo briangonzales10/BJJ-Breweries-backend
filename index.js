@@ -86,6 +86,7 @@ app.put("/tours/:type/:id", cors() ,async(req, res) =>{
     console.log(`Brewery Array Length ${breweries.length}`);
 
     const updateBreweries = breweries
+    console.log(updateBreweries);
 //update Brewery Tour Name
     if (name.length !== 0){
         await tourCollection.updateOne(filter, 
