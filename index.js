@@ -84,7 +84,7 @@ app.put("/tours/:type/:id", cors() ,async(req, res) =>{
     const filter = {'_id' : ObjectId(id)}
    
     console.log(`Brewery Array Length ${breweries.length}`);
-
+    console.log(type);
     const updateBreweries = breweries
     console.log(updateBreweries);
 //update Brewery Tour Name
