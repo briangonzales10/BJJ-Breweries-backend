@@ -95,7 +95,7 @@ app.put("/tours/:type/:id", cors() ,async(req, res) =>{
 //add or removes breweries to/from tour  
 console.log(updateBreweries);
     if (Array.isArray(updateBreweries)) {
-
+        console.log(type);
         if (type === "add"){
         await tourCollection.updateOne(filter, 
             {$addToSet: {breweries: {$each: updateBreweries}}})
